@@ -1,11 +1,11 @@
 import CanvasView from './Canvas/CanvasView'
 import ControlsView from './ControlsView'
 import StatusView from './StatusView'
-import {Directions, getNewPosition, isValidMove} from '../lib/MovementHelper'
+import {rotate, getNewPosition, isValidMove, moveAI} from '../lib/MovementHelper'
 import React, { Component } from 'react'
 import Styled from 'styled-components'
 import {connect} from 'react-redux'
-import { processCommand } from '../lib/ControlHelper';
+import { processCommand, place } from '../lib/ControlHelper';
 import {restart} from '../lib/Utils'
 
 const Container = Styled.div`
@@ -35,51 +35,60 @@ class SimulatorView extends Component {
       status:""
     } 
   }
+
   moveRobot(){ 
-    var newInfo={
-      newPos: getNewPosition(this.state.robot,this.props.settings.squareSize),
-      newStatus:""
-    }
-    if(isValidMove(newInfo,this.props.settings,this.props.wallArray, this.props.goal))
-      this.setState(prevState=>({robot:{...prevState.robot,x:newInfo.newPos[0],y:newInfo.newPos[1]}}))
-    this.updateStatus(newInfo.newStatus)
+    this.prepareMove(function(){return getNewPosition(this.state.robot,this.props.settings.squareSize)}.bind(this))
   }
 
+  right()
+  {
+    this.prepareMove( function(){return rotate(1,this.state.robot)}.bind(this))
+  }
+
+  left(){
+    this.prepareMove( function(){return rotate(-1,this.state.robot)}.bind(this))
+  }
+
+  placeRobot(params){
+    this.prepareMove(function(){return place(params, this.props.settings)}.bind(this))
+  }
+  stepAI()
+  {
+    this.prepareMove(function(){return moveAI(this.state.robot,this.props.settings,this.props.wallArray,this.props.goal)}.bind(this))
+  }
   updateStatus(status){
     this.setState({status:status})
   }
 
-  right(){
-    this.rotate(1)
+  prepareMove(moveType){
+    var newInfo={
+      newPos:moveType(),
+      newStatus:""
+    }
+    if(isValidMove(newInfo,this.props.settings,this.props.wallArray,this.props.goal))
+      this.setState(prevState=>({robot:{...prevState.robot,x:newInfo.newPos[0],y:newInfo.newPos[1],f:newInfo.newPos[2]}}))
+    this.updateStatus(newInfo.newStatus)
   }
-  left(){
-    this.rotate(-1)
+
+  executeCommand({cmd, params}){
+    this[cmd](params)
   }
-  rotate(direction){
-    var newIndex = Directions.findIndex(d=>d===this.state.robot.f)+direction;
-    if (newIndex<0)
-      newIndex=3;
-    if(newIndex>3)
-      newIndex=0
-    this.setState(prevState=>({robot:{...prevState.robot,f:Directions[newIndex]}}))
-  }
+
   handleInput(e){
     if(e.keycode===13||e.which===13){
       this.executeCommand(processCommand(e.target.value))
       e.target.value=""
     }
   }
+
   restartSimulator(){
     restart()
   }
-  executeCommand({cmd, params}){
-    console.log(cmd,params)
-    this[cmd]()
-  }
+
   render() {
     return (
       <Container >
-        {console.log(this.props.wallArray)}
+        
         <Wrapper>
           <ControlsView 
             moveRobot={this.moveRobot.bind(this)}
@@ -87,11 +96,13 @@ class SimulatorView extends Component {
             right={this.right.bind(this)}
             handleInput={this.handleInput.bind(this)}
           />
+          <button onClick={()=>{this.stepAI()}}>AI</button>
         </Wrapper>
         <Wrapper>
           <StatusView
             status={this.state.status}
             robot={this.state.robot}
+            squareSize={this.props.settings.squareSize}
           />
          <CanvasView 
             robot={this.state.robot} 

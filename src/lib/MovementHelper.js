@@ -5,16 +5,42 @@ export class Info{
 	}
 	
 }
+export function moveAI(robot, settings, wallArray, goal){
+	if(robot.x+settings.squareSize/2!==goal.x){
+		if(robot.x>goal.x)
+			robot.f="west"
+		else
+			robot.f="east"
+	}else{
+		if(robot.y+settings.squareSize/2!==goal.x)
+		{
+			if(robot.y>goal.y)	
+				robot.f="north"
+			else
+				robot.f="south"
+		}
+	}
+	return getNewPosition(robot,settings.squareSize)
+}
 export function getRandomInt(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
+export function rotate(direction,{x,y,f}){
+    var newIndex = Directions.findIndex(d=>d===f)+direction;
+    if (newIndex<0)
+      newIndex=3;
+    if(newIndex>3)
+      newIndex=0
+      return [x, y,Directions[newIndex]]
+  }
 export const Directions=["north","east","south","west"]
 
 export function getNewPosition(robot, squareSize){
-	return movementMapper[robot.f](robot.x,robot.y,squareSize)
+	let posArray = movementMapper[robot.f](robot.x,robot.y,squareSize)
+	posArray.push(robot.f)
+	return posArray
 }
 const movementMapper={
 	north:(x,y,distance)=> [x, y-distance],
@@ -30,8 +56,16 @@ export function isValidMove(newInfo, settings, wallArray,goal ){
 	}else
 	{
 		newInfo.newStatus=atGoal(newInfo.newPos,goal)?"Goal!!!!":"Move Successful"
+		if(!isValidFacing(newInfo.newPos[2]))
+		{
+			newInfo.newPos[2]="west"
+			newInfo.newStatus+="  but you can't face that way"
+		}
 		return true
 	}
+}
+function isValidFacing(facing){
+	return Directions.some(direction=>direction===facing)
 }
 function atEdge(newPos, settings){
 	return newPos[0]<0||newPos[0]>=(settings.columns)*settings.squareSize ||

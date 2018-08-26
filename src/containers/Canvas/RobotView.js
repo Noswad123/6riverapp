@@ -8,7 +8,7 @@ class Robot extends Component {
     }
   render() {
     return (
-        <Group>
+        <Group >
             <Rect
                 x={this.props.x}
                 y={this.props.y}

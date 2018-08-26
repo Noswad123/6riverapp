@@ -1,7 +1,6 @@
 # Candidate Writeup
 
 Please fill in this file with a brief description of the items you selected from the backlog and how you addressed them.
-<<<<<<< HEAD
 
 ## Clean up the redundant code in `Robot.move`
 - I removed the switch statement
@@ -13,12 +12,18 @@ Please fill in this file with a brief description of the items you selected from
 - Canvas(the grid), the instructions, controls, and current status have their own container(view) file
 - they make use of helper files for some of the business logic and constant variables
 - I imported styled-components library for inline css
-- right and left  names were changed to right and left respectfully
--
+- I imported redux to manage the state of the canvas and number of walls
 
 ## Replace canvas view with PixiJS (or another graphics package)
 - I used Konva and react-konva libraries to help render objects to the canvas
--The canvas and robot make use of the Rect object
--The goal uses the circle object
-=======
->>>>>>> 8c4b1a53c5244ecf6f9dd02a935f39e84812d064
+- The canvas, walls, and robot make use of the Rect object
+- The goal uses the circle object
+- lines utilize the line object
+- grid dimensions are affected by react-redux canvas state.
+- they are easily changed under the simulator options
+
+## Add walls to block robot motion
+- walls can be selected from the simulator options
+- walls may appear under the robot or under the goal
+- if goal is under the robot, the robot is unaffected unless it moves then tries to move back to the previous location
+- if goal is on top of wall, the goal should be deterined unreachable

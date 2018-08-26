@@ -28,8 +28,8 @@ class CurrentStatus extends Component {
             </Status>
             <RobotTracker>
                 <div>    {this.props.robot.name}</div>
-                <div>AxisX:{this.props.robot.x}</div>
-                <div>AxisY:{this.props.robot.y} </div>
+                <div>X:{this.props.robot.x/this.props.squareSize}</div>
+                <div>Y:{this.props.robot.y/this.props.squareSize} </div>
                 <div>Facing:{this.props.robot.f}</div>
             </RobotTracker>
         </Container>

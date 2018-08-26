@@ -49,26 +49,14 @@ won't count against you.
 _Note_: this is _not_ a sorted priority list.
 
 - Clean up the redundant code in `Robot.move`
-<<<<<<< HEAD
 - Port the code to Angular (or another framework)
 - Replace canvas view with PixiJS (or another graphics package)
   - Add ability to change grid dimensions
   - Add smooth motion rendering as the robot moves
 - Add walls to block robot motion
 
-
-- Support Multiple Robots
 - Use [blueshell](https://www.npmjs.com/package/blueshell) to enhance the AI to find the goal
-=======
 - Support Multiple Robots
-- Add walls to block robot motion
-- Use [blueshell](https://www.npmjs.com/package/blueshell) to enhance the AI to
-  find the goal
-- Replace canvas view with PixiJS (or another graphics package)
-  - Add ability to change grid dimensions
-  - Add smooth motion rendering as the robot moves
-- Port the code to Angular (or another framework)
->>>>>>> 8c4b1a53c5244ecf6f9dd02a935f39e84812d064
 - Port to Typescript
 - Other enhancements?
 
